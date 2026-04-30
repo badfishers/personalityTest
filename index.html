@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>灵魂鉴定局 - 搞笑性格测试</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f0f1a;--bg2:#1a1a2e;--card:#16213e;--card2:#1a1a3e;
+  --accent:#e94560;--accent2:#ff6b6b;--accent3:#feca57;
+  --text:#eee;--text2:#aaa;--text3:#888;
+  --radius:20px;--radius-sm:12px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);
+  min-height:100dvh;overflow-x:hidden;
+}
+/* ===== LOADING ===== */
+.loading-screen{
+  position:fixed;inset:0;z-index:1000;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .6s,visibility .6s;
+}
+.loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loading-orb{
+  width:80px;height:80px;border-radius:50%;
+  background:conic-gradient(var(--accent),var(--accent3),var(--accent));
+  animation:spin 1s linear infinite;
+  margin-bottom:24px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text2);font-size:14px;letter-spacing:2px}
+
+/* ===== PARTICLES BG ===== */
+.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.particle{
+  position:absolute;border-radius:50%;opacity:.15;
+  animation:float linear infinite;
+}
+@keyframes float{
+  0%{transform:translateY(100vh) rotate(0deg)}
+  100%{transform:translateY(-100px) rotate(720deg)}
+}
+
+/* ===== PAGES ===== */
+.page{
+  display:none;min-height:100dvh;position:relative;z-index:1;
+}
+.page.active{display:flex;flex-direction:column;align-items:center}
+
+/* ===== START PAGE ===== */
+.start-page{
+  justify-content:center;padding:40px 20px;text-align:center;
+}
+.start-badge{
+  display:inline-block;padding:6px 20px;border-radius:100px;
+  background:rgba(233,69,96,.15);color:var(--accent);font-size:13px;
+  font-weight:500;letter-spacing:1px;margin-bottom:24px;
+  border:1px solid rgba(233,69,96,.3);
+  margin-top: 32px;
+}
+.start-title{
+  font-size:clamp(36px,8vw,72px);font-weight:900;line-height:1.1;
+  background:linear-gradient(135deg,#fff 0%,var(--accent3) 50%,var(--accent) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:16px;
+}
+.start-sub{
+  font-size:clamp(16px,3vw,20px);color:var(--text2);max-width:500px;
+  line-height:1.6;margin-bottom:48px;
+}
+.start-features{
+  display:flex;gap:24px;flex-wrap:wrap;justify-content:center;margin-bottom:48px;
+}
+.feature{
+  background:var(--card);border-radius:var(--radius-sm);padding:20px 24px;
+  border:1px solid rgba(255,255,255,.06);text-align:center;min-width:140px;
+}
+.feature-num{font-size:32px;font-weight:900;color:var(--accent);display:block}
+.feature-label{font-size:13px;color:var(--text2);margin-top:4px}
+.start-categories{
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:40px;max-width:480px;
+}
+.cat-card{
+  display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:100px;
+  background:var(--card);border:1px solid rgba(255,255,255,.06);font-size:13px;
+}
+.cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.cat-name{color:var(--text);font-weight:500}
+.cat-count{color:var(--text3);font-size:12px;margin-left:4px}
+.btn-start{
+  padding:18px 56px;border:none;border-radius:100px;cursor:pointer;
+  font-size:18px;font-weight:700;color:#fff;font-family:inherit;
+  background:linear-gradient(135deg,var(--accent),#ff8a5c);
+  box-shadow:0 8px 32px rgba(233,69,96,.4);
+  transition:transform .2s,box-shadow .2s;
+  position:relative;overflow:hidden;
+}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(233,69,96,.5)}
+.btn-start:active{transform:scale(.97)}
+.btn-start::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+  transform:translateX(-100%);
+}
+.btn-start:hover::after{animation:shimmer 1.5s infinite}
+@keyframes shimmer{to{transform:translateX(100%)}}
+
+/* ===== QUIZ PAGE ===== */
+.quiz-page{padding:20px;padding-top:48px;padding-bottom:80px}
+.quiz-header{
+  max-width:640px;
+  width: 100%;
+  padding: 32px;
+  margin-top: 32px;
+  box-sizing: border-box;
+}
+.progress-wrap{
+  display:flex;align-items:center;gap:12px;margin-bottom:12px;
+}
+.progress-num{font-size:14px;color:var(--text2);white-space:nowrap}
+.progress-bar{
+  flex:1;height:8px;background:var(--card);border-radius:100px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;border-radius:100px;
+  background:linear-gradient(90deg,var(--accent),var(--accent3));
+  transition:width .4s cubic-bezier(.16,1,.3,1);
+  width:0%;
+}
+.quiz-counter{
+  font-size:13px;color:var(--text3);text-align:right;
+}
+.question-card{
+  max-width:640px;
+  background:var(--card);border-radius:var(--radius);
+  padding:40px 32px;border:1px solid rgba(255,255,255,.06);
+  animation:fadeSlideIn .5s ease;
+  margin: 32px;
+  width: calc(100% - 64px);
+  box-sizing: border-box;
+}
+@keyframes fadeSlideIn{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.question-text{
+  font-size:clamp(18px,4vw,24px);font-weight:700;line-height:1.5;
+  margin-bottom:32px;color:#fff;
+}
+.options{display:flex;flex-direction:column;gap:12px}
+.option{
+  padding:16px 20px;border-radius:var(--radius-sm);cursor:pointer;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  font-size:16px;color:var(--text);transition:all .2s;
+  display:flex;align-items:center;gap:14px;text-align:left;
+  font-family:inherit;line-height:1.5;
+}
+.option:hover{
+  background:rgba(233,69,96,.1);border-color:rgba(233,69,96,.3);
+  transform:translateX(4px);
+}
+.option:active{transform:scale(.98)}
+.option-key{
+  flex-shrink:0;width:32px;height:32px;border-radius:8px;
+  background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:14px;color:var(--text2);
+}
+.option:hover .option-key{background:var(--accent);color:#fff}
+
+/* ===== ANALYZING PAGE ===== */
+.analyzing-page{justify-content:center;padding:40px;text-align:center}
+.analyzing-spinner{
+  width:120px;height:120px;margin:0 auto 32px;position:relative;
+}
+.analyzing-ring{
+  position:absolute;inset:0;border-radius:50%;
+  border:3px solid transparent;
+  animation:spin 1.2s linear infinite;
+}
+.analyzing-ring:nth-child(1){border-top-color:var(--accent)}
+.analyzing-ring:nth-child(2){inset:10px;border-right-color:var(--accent3);animation-direction:reverse;animation-duration:1.5s}
+.analyzing-ring:nth-child(3){inset:20px;border-bottom-color:var(--accent2);animation-duration:1.8s}
+.analyzing-face{
+  position:absolute;inset:30px;border-radius:50%;
+  background:var(--card);display:flex;align-items:center;justify-content:center;
+  font-size:36px;
+}
+.analyzing-text{
+  font-size:20px;font-weight:700;margin-bottom:12px;
+  animation:pulse 1.5s ease-in-out infinite;
+}
+.analyzing-sub{color:var(--text2);font-size:14px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* ===== RESULT PAGE ===== */
+.result-page{padding:20px;padding-top:48px;padding-bottom:80px}
+.result-card{
+  width:100%;max-width:640px;
+  background:var(--card);border-radius:var(--radius);
+  overflow:hidden;border:1px solid rgba(255,255,255,.06);
+  animation:fadeSlideIn .6s ease;
+}
+.result-image-wrap{
+  width:100%;aspect-ratio:1/1;overflow:hidden;position:relative;
+  background:linear-gradient(135deg,var(--bg2),var(--card));
+}
+.result-image-wrap img{
+  width:100%;height:100%;object-fit:cover;
+}
+.result-image-wrap .placeholder-art{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:120px;
+}
+.result-cat-badge{
+  display:inline-block;padding:6px 16px;border-radius:100px;
+  font-size:13px;font-weight:700;letter-spacing:1px;margin-bottom:16px;
+}
+.result-title{
+  font-size:clamp(28px,6vw,40px);font-weight:900;line-height:1.2;
+  margin-bottom:8px;
+}
+.result-subtitle{
+  font-size:18px;color:var(--accent2);margin-bottom:24px;font-weight:500;
+}
+.result-desc{
+  font-size:16px;line-height:1.8;color:var(--text2);margin-bottom:24px;
+}
+.result-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.result-tag{
+  padding:6px 14px;border-radius:100px;font-size:13px;
+  background:rgba(255,255,255,.06);color:var(--text2);
+  border:1px solid rgba(255,255,255,.08);
+}
+.result-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;
+}
+.stat-item{
+  text-align:center;padding:16px 8px;border-radius:var(--radius-sm);
+  background:rgba(255,255,255,.04);
+}
+.stat-value{font-size:24px;font-weight:900;color:var(--accent)}
+.stat-label{font-size:12px;color:var(--text3);margin-top:4px}
+.result-compat{
+  padding:20px;border-radius:var(--radius-sm);margin-bottom:28px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+}
+.result-compat h4{font-size:15px;color:var(--accent3);margin-bottom:12px;font-weight:700}
+.result-compat-list{display:flex;flex-direction:column;gap:8px}
+.compat-item{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:14px;color:var(--text2);
+}
+.compat-bar{
+  flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:100px;
+  margin:0 12px;overflow:hidden;
+}
+.compat-fill{height:100%;border-radius:100px;transition:width 1s ease}
+.compat-pct{font-weight:700;min-width:36px;text-align:right}
+.result-advice{
+  padding:20px;border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,rgba(233,69,96,.1),rgba(254,202,87,.1));
+  border:1px solid rgba(233,69,96,.15);margin-bottom:28px;
+}
+.result-advice h4{font-size:15px;color:var(--accent);margin-bottom:8px;font-weight:700}
+.result-advice p{font-size:14px;line-height:1.7;color:var(--text2)}
+
+.btn-share,.btn-retry{
+  width:100%;padding:16px;border:none;border-radius:var(--radius-sm);
+  cursor:pointer;font-size:16px;font-weight:700;font-family:inherit;
+  transition:all .2s;
+}
+.btn-share{
+  background:linear-gradient(135deg,var(--accent),#ff8a5c);color:#fff;
+  margin-bottom:12px;
+}
+.btn-retry{
+  background:rgba(255,255,255,.06);color:var(--text2);
+  border:1px solid rgba(255,255,255,.1);
+}
+.btn-share:hover,.btn-retry:hover{transform:translateY(-1px)}
+
+/* ===== SPONSOR MODAL ===== */
+.sponsor-overlay{
+  position:fixed;inset:0;z-index:999;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  animation:fadeIn .3s ease;
+}
+.sponsor-overlay.hidden{display:none}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{
+  from{opacity:0;transform:scale(.85) translateY(20px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+.sponsor-modal{
+  background:var(--card);border-radius:var(--radius);
+  max-width:380px;width:100%;padding:32px 28px;text-align:center;
+  border:1px solid rgba(255,255,255,.08);
+  animation:popIn .4s cubic-bezier(.16,1,.3,1);
+  position:relative;
+}
+.sponsor-close{
+  position:absolute;top:12px;right:16px;
+  background:none;border:none;color:var(--text3);font-size:22px;
+  cursor:pointer;line-height:1;padding:4px;
+  transition:color .2s;
+}
+.sponsor-close:hover{color:var(--text)}
+.sponsor-icon{font-size:48px;margin-bottom:12px;display:block}
+.sponsor-title{
+  font-size:22px;font-weight:900;margin-bottom:8px;
+  background:linear-gradient(135deg,var(--accent3),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.sponsor-desc{
+  font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:20px;
+}
+.sponsor-qr-wrap{
+  display:inline-block;padding:12px;background:#fff;border-radius:16px;
+  margin-bottom:16px;box-shadow:0 4px 24px rgba(0,0,0,.3);
+}
+.sponsor-qr-wrap img{
+  width:200px;height:200px;display:block;border-radius:8px;
+  object-fit:contain;
+}
+.sponsor-hint{
+  font-size:13px;color:var(--text3);margin-bottom:16px;
+}
+.sponsor-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.sponsor-btn{
+  padding:10px 20px;border:none;border-radius:100px;cursor:pointer;
+  font-size:13px;font-weight:600;font-family:inherit;transition:all .2s;
+}
+.sponsor-btn-primary{
+  background:linear-gradient(135deg,var(--accent),#ff8a5c);color:#fff;
+}
+.sponsor-btn-secondary{
+  background:rgba(255,255,255,.06);color:var(--text3);
+  border:1px solid rgba(255,255,255,.1);
+}
+.sponsor-btn:hover{transform:translateY(-1px)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:480px){
+  .quiz-page{padding:16px;padding-top:40px;padding-bottom:60px}
+  .result-page{padding:16px;padding-top:40px;padding-bottom:60px}
+  .progress-num{font-size:13px}
+  .progress-bar{height:6px}
+  .quiz-counter{font-size:12px}
+  .question-card{padding:24px 18px;}
+  .question-text{font-size:17px;margin-bottom:24px}
+  .options{gap:10px}
+  .option{padding:14px 16px;font-size:15px}
+  .option-key{width:28px;height:28px;font-size:13px}
+  .result-body{padding:24px}
+  .start-features{gap:12px}
+  .feature{min-width:100px;padding:14px 16px}
+  .result-stats{grid-template-columns:repeat(3,1fr);gap:8px}
+  .stat-item{padding:14px 6px}
+  .stat-value{font-size:20px}
+  .stat-label{font-size:11px}
+}
+/* ===== REDUCED MOTION ===== */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:0.01ms!important;transition-duration:0.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-orb"></div>
+  <div class="loading-text">正在连接你的灵魂...</div>
+</div>
+
+<!-- Particles -->
+<div class="particles" id="particles"></div>
+
+<!-- Start Page -->
+<div class="page active" id="startPage">
+  <div class="start-badge">v2.0 灵魂级精度</div>
+  <h1 class="start-title">灵魂鉴定局</h1>
+  <p class="start-sub">通过30道灵魂拷问，精准识别你隐藏的真实人格。<br>科学依据：几乎没有，但准得离谱。</p>
+  <div class="start-features">
+    <div class="feature"><span class="feature-num">30</span><div class="feature-label">灵魂拷问</div></div>
+    <div class="feature"><span class="feature-num">22</span><div class="feature-label">奇葩人格</div></div>
+    <div class="feature"><span class="feature-num">4</span><div class="feature-label">人格大类</div></div>
+  </div>
+  <div class="start-categories">
+    <div class="cat-card cat-blue"><span class="cat-dot" style="background:#3B82F6"></span><span class="cat-name">理性分析派</span><span class="cat-count">5种</span></div>
+    <div class="cat-card cat-green"><span class="cat-dot" style="background:#10B981"></span><span class="cat-name">社交能量派</span><span class="cat-count">5种</span></div>
+    <div class="cat-card cat-amber"><span class="cat-dot" style="background:#F59E0B"></span><span class="cat-name">自由享乐派</span><span class="cat-count">6种</span></div>
+    <div class="cat-card cat-purple"><span class="cat-dot" style="background:#8B5CF6"></span><span class="cat-name">内敛独处派</span><span class="cat-count">5种</span></div>
+  </div>
+  <button class="btn-start" onclick="startQuiz()">开始鉴定灵魂</button>
+</div>
+
+<!-- Quiz Page -->
+<div class="page" id="quizPage">
+  <div class="quiz-header">
+    <div class="progress-wrap">
+      <span class="progress-num" id="progressNum">1/50</span>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <div class="quiz-counter" id="quizCounter"></div>
+  </div>
+  <div class="question-card" id="questionCard">
+    <div class="question-text" id="questionText"></div>
+    <div class="options" id="optionsWrap"></div>
+  </div>
+</div>
+
+<!-- Analyzing Page -->
+<div class="page" id="analyzingPage">
+  <div class="analyzing-spinner">
+    <div class="analyzing-ring"></div>
+    <div class="analyzing-ring"></div>
+    <div class="analyzing-ring"></div>
+    <div class="analyzing-face" id="analyzeFace">&#129300;</div>
+  </div>
+  <div class="analyzing-text" id="analyzeText">正在解析你的灵魂碎片...</div>
+  <div class="analyzing-sub" id="analyzeSub">请勿关闭页面，你的灵魂正在排队</div>
+</div>
+
+<!-- Result Page -->
+<div class="page" id="resultPage">
+  <div class="result-card" id="resultCard"></div>
+</div>
+
+<!-- Sponsor Modal -->
+<div class="sponsor-overlay hidden" id="sponsorModal">
+  <div class="sponsor-modal">
+    <button class="sponsor-close" onclick="closeSponsor()">&times;</button>
+    <span class="sponsor-icon">&#9749;</span>
+    <h3 class="sponsor-title">请作者喝杯咖啡</h3>
+    <p class="sponsor-desc">
+      灵魂鉴定局完全免费开放<br>
+      如果测试结果让你笑了，可以请作者喝杯咖啡续命 ☕<br>
+      您的赞助是我们持续更新的最大动力！
+    </p>
+    <div class="sponsor-qr-wrap">
+      <img src="assets/images/qr-code.jpg" alt="赞助二维码" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div style="display:none;width:200px;height:200px;background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:8px;color:#666;font-size:14px;align-items:center;justify-content:center;">二维码加载失败</div>
+    </div>
+    <p class="sponsor-hint">微信 / 支付宝 扫码即可赞助</p>
+    <div class="sponsor-actions">
+      <button class="sponsor-btn sponsor-btn-primary" onclick="closeSponsor()">朕已阅，下次再说</button>
+      <button class="sponsor-btn sponsor-btn-secondary" onclick="neverShowSponsor()">不再提醒</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== PARTICLES =====
+(function(){
+  const c=document.getElementById('particles');
+  const colors=['#e94560','#feca57','#ff6b6b','#48dbfb','#ff9ff3','#54a0ff'];
+  for(let i=0;i<20;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    const s=Math.random()*6+3;
+    p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${colors[i%colors.length]};animation-duration:${Math.random()*15+10}s;animation-delay:${Math.random()*10}s;`;
+    c.appendChild(p);
+  }
+})();
+
+// ===== DATA: 22 PERSONALITY TYPES =====
+const personalities = [
+  {
+    id:'caffeine',name:'咖啡因驱动体',subtitle:'没有咖啡 = 没有生命',
+    color:'#8B4513',emoji:'&#9749;',
+    image:'assets/images/personality-caffeine.png',
+    fallbackGradient:'linear-gradient(135deg,#8B4513,#D2691E)',
+    description:'你的人生哲学很简单：咖啡续命，奶茶养魂。你的血管里流淌的不是血液，是美式。你的一天从第一杯咖啡开始，如果有人在你喝完咖啡前跟你说话，那是他们的错。你的工位永远有至少三个杯子，你的积分永远优先换咖啡券。科学研究表明，你可能在咖啡发明之前就已经在喝咖啡了。',
+    tags:['早起靠咖啡','外卖常客','打工人之魂','杯子收藏家'],
+    stats:{energy:95,social:60,chaos:40},
+    compat:['奶茶鉴赏家','深夜修仙派','社交牛人'],
+    compatScores:[95,70,55],
+    advice:'偶尔尝试用水代替咖啡，你会发现自己其实是需要睡觉的，而不是需要咖啡因。'
+  },
+  {
+    id:'snack',name:'零食囤积症患者',subtitle:'冰箱是我的安全区',
+    color:'#FF6B35',emoji:'&#127846;',
+    image:'assets/images/personality-snack.png',
+    fallbackGradient:'linear-gradient(135deg,#FF6B35,#FFD700)',
+    description:'你的包里永远有吃的，你的工位抽屉就是一个小型便利店。你从不在超市空手而归，你的"就买一包"和"买了三袋"之间只差一秒。你相信零食能解决一切问题——难过吃点好的，开心更要吃点好的，无聊也吃点好的。你的朋友都管你叫"移动的零食柜"。',
+    tags:['吃货本货','囤货达人','深夜放毒','减肥失败者'],
+    stats:{energy:75,social:70,chaos:30},
+    compat:['厨艺假装大师','沙发土豆','社交牛人'],
+    compatScores:[90,85,60],
+    advice:'你不需要停止吃零食，你只需要停止在凌晨两点打开外卖App。'
+  },
+  {
+    id:'drama',name:'戏精本精',subtitle:'生活需要仪式感，我需要戏剧感',
+    color:'#E91E63',emoji:'&#127917;',
+    image:'assets/images/personality-drama.png',
+    fallbackGradient:'linear-gradient(135deg,#E91E63,#FF5722)',
+    description:'你的人生就是一部连续剧，而且你是唯一的编剧、导演、主演。叹气时你是悲剧主角，走路带风时你是偶像剧女主，被外卖超时15分钟时你是复仇剧里的反派。你的情绪开关比智能灯泡还灵敏，一秒钟可以从"世界真美好"切换到"人间不值得"。你的朋友圈就是你的舞台。',
+    tags:['朋友圈演员','情绪过山车','文案大师','泪点选手'],
+    stats:{energy:88,social:90,chaos:85},
+    compat:['社交牛人','拖延症晚期','快递签收机器人'],
+    compatScores:[80,75,50],
+    advice:'不是所有事情都需要BGM和慢动作镜头的。偶尔安静一下，你会发现生活本身就已经够戏剧性了。'
+  },
+  {
+    id:'introvert',name:'假装外向的内向者',subtitle:'社交电量永远只有1%',
+    color:'#5C6BC0',emoji:'&#128564;',
+    image:'assets/images/personality-introvert.png',
+    fallbackGradient:'linear-gradient(135deg,#5C6BC0,#7E57C2)',
+    description:'你在社交场合表现得像个社牛，但回到家就会瘫在沙发上不省人事。你掌握了一项高级技能——"假装很高兴见到你"。你的理想周末是：不出门、不说话、不见人。你手机常年静音，你觉得微信已读不回是一种艺术表达。你参加完聚会后需要三天来恢复社交电量。',
+    tags:['社交耗能','独处充电','已读不回','宅家选手'],
+    stats:{energy:30,social:40,chaos:15},
+    compat:['沙发土豆','深夜修仙派','拖延症晚期'],
+    compatScores:[90,75,80],
+    advice:'拒绝社交邀请并不可耻，"下次一定"是你最好的朋友，请好好珍惜它。'
+  },
+  {
+    id:'nerd',name:'学术装腔者',subtitle:'我看过那篇论文（大概）',
+    color:'#00897B',emoji:'&#128218;',
+    image:'assets/images/personality-nerd.png',
+    fallbackGradient:'linear-gradient(135deg,#00897B,#26A69A)',
+    description:'你收藏了1000+篇论文但一篇都没看完，你关注了50个学术公众号但从来不点开。你擅长用专业术语把简单的事情说复杂，在聚会中不经意提起你最近在看的那本冷门书籍（其实只看了序）。你的书架上摆满了书，但大部分都是装饰品。你相信"知道这个概念"和"理解这个概念"是同一件事。',
+    tags:['论文收藏家','术语爱好者','书架装饰师','知识焦虑'],
+    stats:{energy:50,social:45,chaos:35},
+    compat:['拖延症晚期','细节控晚期','假装佛系'],
+    compatScores:[85,60,55],
+    advice:'真正聪明的人知道自己不知道什么。而你，知道自己假装知道什么。这已经很了不起了。'
+  },
+  {
+    id:'queen',name:'摸鱼王者',subtitle:'带薪发呆是我的基本人权',
+    color:'#FFD54F',emoji:'&#128081;',
+    image:'assets/images/personality-queen.png',
+    fallbackGradient:'linear-gradient(135deg,#FFD54F,#FF8F00)',
+    description:'你把"摸鱼"变成了一门艺术。你能在老板走过来的0.5秒内切换到工作界面，你的Alt+Tab速度比电竞选手的反应还快。你发明了至少五种"看起来在忙"的姿势。你每天的真正工作时间只有2小时，但这2小时的效率足以支撑你剩下6小时的摸鱼。你的座右铭是：认真摸鱼，快乐生活。',
+    tags:['Alt+Tab冠军','带薪快乐','效率高手','时间管理大师'],
+    stats:{energy:20,social:50,chaos:25},
+    compat:['拖延症晚期','沙发土豆','深夜修仙派'],
+    compatScores:[95,80,70],
+    advice:'你已经把摸鱼玩到了极致，也许可以考虑把这些技能用在正经事上——算了，别浪费天赋。'
+  },
+  {
+    id:'hero',name:'拯救世界综合征',subtitle:'这个Bug，我来解决！（然后搞出三个新Bug）',
+    color:'#EF5350',emoji:'&#128737;',
+    image:'assets/images/personality-hero.png',
+    fallbackGradient:'linear-gradient(135deg,#EF5350,#FF7043)',
+    description:'你有一种无法抑制的冲动：看到问题就想解决。不管是不是你的事，不管有没有人请你帮忙，你就是忍不住。你觉得世界缺了你就会停转。你总是说"这个我来"，然后发现自己同时接了十件事，每件事都只做了一半。你是办公室里最容易累倒的人，也是最让人感动的人。',
+    tags:['万金油','过度承诺','热心肠','容易内耗'],
+    stats:{energy:92,social:88,chaos:60},
+    compat:['戏精本精','社交牛人','咖啡因驱动体'],
+    compatScores:[70,85,65],
+    advice:'学会说"不"比学会说"我来"需要更大的勇气。你的善良需要边界。'
+  },
+  {
+    id:'phone',name:'手机长在手上的物种',subtitle:'手机没电 = 我没电',
+    color:'#7C4DFF',emoji:'&#128241;',
+    image:'assets/images/personality-phone.png',
+    fallbackGradient:'linear-gradient(135deg,#7C4DFF,#B388FF)',
+    description:'你的手机充电宝永远在身边，你的手指已经进化成了适合滑屏幕的形状。你每天解锁手机200次以上，你的屏幕使用时间永远让你自己都害怕。你上厕所必须带手机，吃饭必须先拍照，起床第一件事是看手机，睡前最后一件事还是看手机。你可能已经不记得上一次不看屏幕超过一小时是什么时候了。',
+    tags:['屏幕依赖','表情包大师','冲浪达人','颈椎病患者'],
+    stats:{energy:40,social:65,chaos:35},
+    compat:['戏精本精','深夜修仙派','奶茶鉴赏家'],
+    compatScores:[75,90,65],
+    advice:'世界上有些事情是不能被搜索引擎替代的——比如真实的面对面交流和没有滤镜的日出。'
+  },
+  {
+    id:'creative',name:'创意爆浆体质',subtitle:'灵感来得快去得也快，像龙卷风',
+    color:'#FF4081',emoji:'&#127912;',
+    image:'assets/images/personality-creative.png',
+    fallbackGradient:'linear-gradient(135deg,#FF4081,#F50057)',
+    description:'你的大脑像一台永不停歇的点子机器——可惜大部分点子都只存在了3秒钟。你同时开始了17个项目，完成了0.5个。你有一本写满了计划的笔记本，但翻开的页数不超过3页。你觉得自己是创意天才，别人觉得你是三分钟热度选手。但你知道吗？真正的天才都是这样的（大概）。',
+    tags:['想法批发商','半成品收藏家','脑暴选手','计划通'],
+    stats:{energy:85,social:55,chaos:90},
+    compat:['戏精本精','拖延症晚期','学术装腔者'],
+    compatScores:[80,90,50],
+    advice:'完成比完美更重要。试着把那17个项目中的1个做完，你会体验到一种叫"成就感"的奇妙感觉。'
+  },
+  {
+    id:'chef',name:'厨艺假装大师',subtitle:'我的厨艺水平 = 煮泡面加个蛋',
+    color:'#FF8F00',emoji:'&#127859;',
+    image:'assets/images/personality-chef.png',
+    fallbackGradient:'linear-gradient(135deg,#FF8F00,#FFC107)',
+    description:'你觉得自己做的饭挺好吃，但你朋友不这么认为。你擅长把简单的事情复杂化——比如煎个蛋要用到三个锅。你收藏了1000个菜谱视频，但实际操作过的不超过5个，成功率不超过20%。你的厨房是灾难现场，但你每次都会发朋友圈说"今天也是认真生活的一天"。你的外卖订单比你的做饭次数多100倍。',
+    tags:['厨房杀手','菜谱收藏家','外卖VIP','拍照先吃'],
+    stats:{energy:55,social:60,chaos:70},
+    compat:['零食囤积症患者','沙发土豆','咖啡因驱动体'],
+    compatScores:[95,70,60],
+    advice:'承认泡面就是你最拿手的菜也没什么丢人的。毕竟，能坚持吃自己做的饭的人，已经很勇敢了。'
+  },
+  {
+    id:'detective',name:'细节控晚期患者',subtitle:'那个标点符号用错了你知道吗？',
+    color:'#00ACC1',emoji:'&#128269;',
+    image:'assets/images/personality-detective.png',
+    fallbackGradient:'linear-gradient(135deg,#00ACC1,#4DD0E1)',
+    description:'你能在一篇文章里找出17个错误，你会在别人发的朋友圈里发现背景里的可疑物品。你排列东西必须按颜色/大小/字母顺序，你的桌面整齐到让人怀疑你是否有强迫症。你看不惯任何不对齐的东西，你的内心os永远是"这个可以做得更好"。你的朋友发消息给你之前都要检查三遍错别字。',
+    tags:['错别字猎人','排列整齐','格式警察','完美主义'],
+    stats:{energy:60,social:35,chaos:20},
+    compat:['拖延症晚期','学术装腔者','假装佛系'],
+    compatScores:[55,70,40],
+    advice:'不是所有人都能注意到那个像素级的偏差，也不需要所有人注意到。适当放下放大镜，世界其实没那么粗糙。'
+  },
+  {
+    id:'sleep',name:'深夜修仙派',subtitle:'凌晨三点是我的灵感巅峰',
+    color:'#3F51B5',emoji:'&#127769;',
+    image:'assets/images/personality-sleep.png',
+    fallbackGradient:'linear-gradient(135deg,#3F51B5,#7986CB)',
+    description:'你的生物钟跟正常人完全相反。白天你是行尸走肉，深夜你才真正活了过来。你每天晚上跟自己说"今晚一定要早睡"，然后凌晨两点还在刷手机。你觉得凌晨三点的世界特别安静美好，适合思考和发朋友圈。你的黑眼圈已经成了你的标志性特征，你考虑过把它纹上去。',
+    tags:['夜猫子','早起失败者','黑眼圈代言人','熬夜冠军'],
+    stats:{energy:30,social:45,chaos:45},
+    compat:['手机长在手上的物种','假装外向的内向者','摸鱼王者'],
+    compatScores:[95,80,75],
+    advice:'你的灵感不是只在凌晨三点出现的，只是因为白天太忙了你没注意到。试着连续早睡一周，你会发现白天的世界也挺有意思的。'
+  },
+  {
+    id:'procrastinator',name:'拖延症晚期选手',subtitle:'DDL是第一生产力',
+    color:'#F44336',emoji:'&#9200;',
+    image:'assets/images/personality-procrastinator.png',
+    fallbackGradient:'linear-gradient(135deg,#F44336,#EF9A9A)',
+    description:'你的座右铭是"还有时间"。你总是在最后关头爆发惊人的战斗力，然后发誓下次一定提前开始——但你永远不会。你的一天大概是这样：80%时间焦虑+20%时间爆发=100%的奇迹。你的闹钟响了之后还能再睡"五分钟"（实际30分钟）。你擅长把5分钟能做完的事情拖到第二天。',
+    tags:['DDL战士','五分钟选手','焦虑制造机','奇迹创造者'],
+    stats:{energy:45,social:50,chaos:75},
+    compat:['摸鱼王者','深夜修仙派','创意爆浆体质'],
+    compatScores:[95,85,80],
+    advice:'你现在看到的这条建议，大概也是拖到最后才看的吧？没关系，你已经很擅长在压力下生存了。'
+  },
+  {
+    id:'couch',name:'沙发土豆',subtitle:'外面的世界太危险，沙发才是我的归宿',
+    color:'#795548',emoji:'&#127746;',
+    image:'assets/images/personality-couch.png',
+    fallbackGradient:'linear-gradient(135deg,#795548,#A1887F)',
+    description:'你跟沙发的感情比跟任何人都深。你的周末计划就是：躺着。你觉得出门是一件需要提前三天准备的大事。你的追剧清单有200部，你已经看完了195部。你有一个完美的"葛优瘫"姿势，你的外卖App里收藏了所有附近的店。你觉得旅游就是换个地方躺着。',
+    tags:['追剧达人','躺平哲学','外卖常客','宅家王者'],
+    stats:{energy:15,social:30,chaos:10},
+    compat:['深夜修仙派','零食囤积症患者','假装外向的内向者'],
+    compatScores:[85,95,90],
+    advice:'偶尔站起来活动一下，不是说你必须出门，至少从沙发移到床上也算是一种运动。'
+  },
+  {
+    id:'boba',name:'奶茶鉴赏家',subtitle:'一天不喝奶茶，浑身难受',
+    color:'#EC407A',emoji:'&#129380;',
+    image:'assets/images/personality-boba.png',
+    fallbackGradient:'linear-gradient(135deg,#EC407A,#F48FB1)',
+    description:'你对奶茶的了解堪比品酒师对红酒的了解。你能品出这家用的是植脂末还是鲜奶，你能分辨珍珠的Q弹程度精确到0.1。你的消费记录里80%都是奶茶店，你认识的奶茶店比认识的人都多。你有一个奶茶积分卡 collection，你的微信名可能跟奶茶有关。你说"减肥"但你的手永远在点奶茶。',
+    tags:['奶茶雷达','积分卡收藏家','糖分爱好者','快乐水选手'],
+    stats:{energy:65,social:75,chaos:30},
+    compat:['零食囤积症患者','咖啡因驱动体','社交牛人'],
+    compatScores:[90,70,85],
+    advice:'全糖去冰是你的标配，但偶尔试试无糖——你会发现，原来奶茶本身也是有味道的。'
+  },
+  {
+    id:'social',name:'社交恐怖分子',subtitle:'跟我说话是被迫的，因为我会主动找你说话',
+    color:'#FF7043',emoji:'&#128588;',
+    image:'assets/images/personality-social.png',
+    fallbackGradient:'linear-gradient(135deg,#FF7043,#FFAB91)',
+    description:'你跟陌生人聊天的能力让所有人都自愧不如。你能在电梯里跟陌生人成为朋友，在排队时跟前后的人都加微信。你的社交圈大到你记不住所有人的名字，但每个人都记得你。你觉得沉默是最大的尴尬，所以你永远在说话。你的朋友分三种：认识的、见过面的、聊过天的。',
+    tags:['话痨','人脉达人','自来熟','社牛天花板'],
+    stats:{energy:90,social:98,chaos:50},
+    compat:['戏精本精','拯救世界综合征','奶茶鉴赏家'],
+    compatScores:[85,75,80],
+    advice:'会说话是天赋，但学会倾听是修养。有时候沉默比一万句话更有力量。'
+  },
+  {
+    id:'delivery',name:'快递签收机器人',subtitle:'一天不收快递，手痒',
+    color:'#66BB6A',emoji:'&#128230;',
+    image:'assets/images/personality-delivery.png',
+    fallbackGradient:'linear-gradient(135deg,#66BB6A,#A5D6A7)',
+    description:'你打开购物App的频率比打开微信还高。你买的很多东西到货了才想起来自己下单过。你的房间像一个小型仓库，快递盒子堆到天花板。你觉得"买买买"是解决一切烦恼的最佳方案。你的银行卡余额总是在提醒你冷静，但你选择忽略。你最开心的一天就是同时收到8个快递的那天。',
+    tags:['购物车满了','拆快递快乐','余额焦虑','退货达人'],
+    stats:{energy:60,social:50,chaos:55},
+    compat:['零食囤积症患者','沙发土豆','细节控晚期'],
+    compatScores:[75,80,55],
+    advice:'买之前问问自己：这是"需要"还是"想要"？如果回答超过3秒还没想清楚，那就别买了。'
+  },
+  {
+    id:'zen',name:'假装佛系',subtitle:'都行、可以、没关系（内心：才怪）',
+    color:'#26A69A',emoji:'&#9711;',
+    image:'assets/images/personality-zen.png',
+    fallbackGradient:'linear-gradient(135deg,#26A69A,#80CBC4)',
+    description:'你表面上一副无所谓的样子，内心其实比谁都在意。你的口头禅是"随缘"和"都行"，但你会在事后反复回味别人说的每一句话。你假装不在意排名，但偷偷查了八遍。你觉得"佛系"是一种高级的生存策略——但其实你只是不敢表达真实想法。你是朋友圈里最"看淡一切"的人，也是最深夜emo的人。',
+    tags:['表面佛系','内心戏王','微笑面具','深夜emo'],
+    stats:{energy:40,social:55,chaos:30},
+    compat:['假装外向的内向者','拖延症晚期','深夜修仙派'],
+    compatScores:[85,75,90],
+    advice:'真正的佛系是放下，而不是假装不在乎。试着对你真正在意的事情说一句"我想要"——你会发现世界不会因此崩塌。'
+  },
+  {
+    id:'pet',name:'宠物比我亲',subtitle:'猫/狗说啥就是啥，人类的话仅供参考',
+    color:'#AB47BC',emoji:'&#128049;',
+    image:'assets/images/personality-pet.png',
+    fallbackGradient:'linear-gradient(135deg,#AB47BC,#CE93D8)',
+    description:'你的手机相册里有5000张宠物的照片，只有50张自己的。你的宠物有专属的社交账号，粉丝比你多。你跟宠物说话的温柔程度是你跟任何人说话的十倍。你觉得宠物的眼神比人类的心灵鸡汤管用。你的消费优先级是：宠物>自己>其他人。你最大的烦恼是上班不能带宠物。',
+    tags:['铲屎官','毛孩子亲妈/爸','宠物摄影师','猫奴/狗奴'],
+    stats:{energy:55,social:50,chaos:25},
+    compat:['沙发土豆','零食囤积症患者','假装佛系'],
+    compatScores:[80,70,75],
+    advice:'爱宠物很好，但别忘了你也需要被爱。偶尔把拍宠物的镜头转向身边的人——他们会很开心的。'
+  },
+  {
+    id:'planner',name:'计划永远赶不上变化',subtitle:'我的计划表比我的实际执行力好看',
+    color:'#42A5F5',emoji:'&#128203;',
+    image:'assets/images/personality-planner.png',
+    fallbackGradient:'linear-gradient(135deg,#42A5F5,#90CAF9)',
+    description:'你的Notion/手帐比你的简历还精致。你的计划详细到每小时，但你的实际执行大概只完成了计划的10%。你花在做计划上的时间比实际做事的时间还多。你觉得只要计划做得够完美，执行就只是形式。你是日程表艺术家，你的日历五颜六色，但大部分任务后面都跟着"延期"。',
+    tags:['手帐达人','计划艺术家','Notion重度用户','时间幻觉'],
+    stats:{energy:50,social:40,chaos:45},
+    compat:['拖延症晚期','细节控晚期','学术装腔者'],
+    compatScores:[95,80,70],
+    advice:'计划做到七分就足够了，剩下的三分留给变化。完美的计划不如笨拙的执行。'
+  },
+  {
+    id:'complain',name:'专业吐槽选手',subtitle:'不是我挑剔，是世界配不上我',
+    color:'#78909C',emoji:'&#128172;',
+    image:'assets/images/personality-complain.png',
+    fallbackGradient:'linear-gradient(135deg,#78909C,#B0BEC5)',
+    description:'你有一双发现问题的眼睛——可惜你缺少解决问题的手。你能在一顿完美的晚餐中找到3个槽点，你能在晴天里找到下雨的理由。你的吐槽精准且幽默，你的朋友既怕你吐槽他们又想听你吐槽别人。你是朋友圈里的差评师，你的评论区永远是最精彩的。你觉得吐槽是一种爱的表达。',
+    tags:['吐槽达人','差评师','毒舌选手','建议大师'],
+    stats:{energy:55,social:70,chaos:40},
+    compat:['戏精本精','细节控晚期','假装佛系'],
+    compatScores:[90,75,60],
+    advice:'你吐槽的能力一流，但偶尔也试着夸夸别人。你会发现，正面反馈比吐槽更有影响力。'
+  },
+  {
+    id:'samepicker',name:'选项强迫症患者',subtitle:'A就完事了，下一题',
+    color:'#FF1744',emoji:'&#129318;',
+    image:null,
+    fallbackGradient:'linear-gradient(135deg,#FF1744,#FF5252)',
+    description:'你就是传说中的"全选A选手"——不是因为你懒，而是因为你坚信：既然第一个选项放在第一个，那它一定是最好的。你的答题速度堪比闪电，别人还在读题你已经点完了。你的人生哲学是：快速决策，绝不回头。你可能是这个世界上最果断的人，也是最懒得思考的人。恭喜你，你的灵魂鉴定结果就是——你本人。纯度100%。',
+    tags:['全选A选手','光速答题','绝不回头','选项忠实粉丝'],
+    stats:{energy:99,social:50,chaos:99},
+    compat:['拖延症晚期','沙发土豆','咖啡因驱动体'],
+    compatScores:[50,40,60],
+    advice:'建议你下次认真读一下题目，你会发现选项B、C、D也是很有意思的。'
+  }
+];
+
+// ===== DATA: 30 QUESTIONS =====
+// Each option maps to DIFFERENT personality types for maximum differentiation
+const questions = [
+  {
+    q: '早上闹钟响了，你会？',
+    opts: [
+      {text:'闭眼摸到咖啡机，没有咖啡我是行尸走肉',scores:{caffeine:3}},
+      {text:'翻个身，再睡"最后五分钟"（然后迟到30分钟）',scores:{sleep:2,procrastinator:2}},
+      {text:'闹钟？我昨晚根本没睡，正在刷短视频',scores:{phone:3}},
+      {text:'起床后对着镜子给自己打气：今天也要改变世界！',scores:{hero:3}},
+    ]
+  },
+  {
+    q: '朋友突然约你出门，你的第一反应是？',
+    opts: [
+      {text:'走起！去哪？几点？穿什么？我现在就出发！',scores:{social:3}},
+      {text:'假装没看到消息，等"忙完"再回复（永远不会忙完）',scores:{introvert:3}},
+      {text:'先把今晚的穿搭发朋友圈，出门不拍照等于没出门',scores:{drama:2,phone:2}},
+      {text:'出门？外面多危险，我在沙发上挺好的',scores:{couch:3}},
+    ]
+  },
+  {
+    q: '逛超市看到零食打折，你通常会？',
+    opts: [
+      {text:'直接搬一购物车，家里零食柜永远有空位',scores:{snack:3}},
+      {text:'先研究配料表和保质期，对比三家店的价格',scores:{detective:3}},
+      {text:'拍照发朋友圈"今天的折扣也太香了"，然后只买了一包',scores:{phone:2,drama:1}},
+      {text:'无所谓，随便买两包，生活嘛差不多就行',scores:{zen:3}},
+    ]
+  },
+  {
+    q: '你的手机屏幕使用时间大概是？',
+    opts: [
+      {text:'10小时以上，手机已经是我身体的一部分了',scores:{phone:3}},
+      {text:'我从不看这个数据，知道了只会焦虑',scores:{zen:2,introvert:1}},
+      {text:'应该在8小时左右？其实我也不太确定',scores:{creative:2}},
+      {text:'手机是什么？我忙着拯救世界呢',scores:{hero:2,planner:1}},
+    ]
+  },
+  {
+    q: '关于做饭这件事，你？',
+    opts: [
+      {text:'我是隐藏的大厨，我的拿手好菜能开店',scores:{chef:3}},
+      {text:'外卖App的VIP会员等级比我的工资涨得还快',scores:{delivery:2,couch:1}},
+      {text:'煮泡面加个蛋就是我的厨艺巅峰了',scores:{procrastinator:2,queen:1}},
+      {text:'收藏了800个菜谱视频，实际做过的不超过3个',scores:{planner:2,creative:1}},
+    ]
+  },
+  {
+    q: '你的书桌/工位长什么样？',
+    opts: [
+      {text:'一尘不染，每支笔都有固定的位置',scores:{detective:3}},
+      {text:'堆满了零食、奶茶杯和猫毛，这就是我的王国',scores:{snack:2,pet:2}},
+      {text:'有序的混乱，我知道每样东西在哪（大概吧）',scores:{creative:3}},
+      {text:'什么书桌？我在沙发上办公，效率一样高（低）',scores:{queen:2,couch:1}},
+    ]
+  },
+  {
+    q: '你最向往的生活方式是？',
+    opts: [
+      {text:'忙碌充实，每天被任务填满，累并快乐着',scores:{hero:3}},
+      {text:'躺平追剧，外卖续命，与世无争',scores:{couch:3}},
+      {text:'到处社交，认识新朋友，人生就是派对',scores:{social:3}},
+      {text:'一个人安安静静，不被打扰就是最大的幸福',scores:{introvert:3}},
+    ]
+  },
+  {
+    q: 'deadline（截止日期）快到了，你的状态是？',
+    opts: [
+      {text:'早三天就完成了，我的人生不允许意外',scores:{planner:3}},
+      {text:'前95%的时间焦虑但不行动，最后5%爆肝完成',scores:{procrastinator:3}},
+      {text:'什么deadline？我的时区和你们不一样',scores:{sleep:3}},
+      {text:'发个朋友圈"DDL是第一生产力"，然后继续刷手机',scores:{phone:2,drama:1}},
+    ]
+  },
+  {
+    q: '你的朋友圈发帖频率是？',
+    opts: [
+      {text:'一天三到五条，生活值得被直播',scores:{drama:3}},
+      {text:'每条都是精心编辑的，至少修图20分钟',scores:{detective:2,phone:1}},
+      {text:'万年潜水党，默默点赞但从不发帖',scores:{introvert:3}},
+      {text:'只发我家猫/狗，它才是这个号的主人',scores:{pet:3}},
+    ]
+  },
+  {
+    q: '以下哪种情况最让你崩溃？',
+    opts: [
+      {text:'别人用"你"打成了"ni"，标点符号不对',scores:{detective:3}},
+      {text:'说好的计划突然被打乱，整个世界都不对劲了',scores:{planner:3}},
+      {text:'奶茶店关门了，这比失恋还难受',scores:{boba:3}},
+      {text:'手机没电了而且没带充电宝，这是世界末日',scores:{phone:3}},
+    ]
+  },
+  {
+    q: '下大雨了，你会怎么度过？',
+    opts: [
+      {text:'窝在被窝里追剧，雨天配薯片，完美',scores:{couch:3}},
+      {text:'赶紧拍照！雨天的光线太好看了，朋友圈素材get',scores:{drama:2,phone:2}},
+      {text:'烦躁死了，今天约了人怎么办，计划全毁了',scores:{planner:3}},
+      {text:'打开外卖App，雨天和美食最配了',scores:{snack:2,delivery:1}},
+    ]
+  },
+  {
+    q: '压力山大的时候，你会？',
+    opts: [
+      {text:'疯狂刷手机，短视频是我的止痛药',scores:{phone:3}},
+      {text:'疯狂吃零食，嘴巴不停就能忘记烦恼',scores:{snack:3}},
+      {text:'找朋友吐槽，把负能量全部倒给别人',scores:{social:2,complain:2}},
+      {text:'什么都不做，躺着，等压力自己过去',scores:{couch:2,sleep:1}},
+    ]
+  },
+  {
+    q: '收到一个快递，你？',
+    opts: [
+      {text:'今天是什么？我都忘了买过...拆开看看！',scores:{delivery:3}},
+      {text:'淡定地拆开，发个朋友圈记录拆箱的仪式感',scores:{phone:2,drama:1}},
+      {text:'先拆包装，再把盒子按颜色排列放好',scores:{detective:2,queen:1}},
+      {text:'快递？我家的猫好像比我更兴奋',scores:{pet:3}},
+    ]
+  },
+  {
+    q: '你对自己的睡眠质量有什么评价？',
+    opts: [
+      {text:'凌晨三点才有睡意，早上八点闹钟响的时候想死',scores:{sleep:3}},
+      {text:'沾枕就着，睡眠质量比婴儿还好',scores:{couch:2,zen:1}},
+      {text:'躺在床上脑子里开演唱会，想到凌晨两点',scores:{creative:2,procrastinator:1}},
+      {text:'我需要一杯热牛奶和一本无聊的书才能入睡',scores:{nerd:2,planner:1}},
+    ]
+  },
+  {
+    q: '面对一个完全陌生的挑战，你？',
+    opts: [
+      {text:'兴奋！终于有新东西可以折腾了！',scores:{hero:3}},
+      {text:'先花三小时做一个详细的计划书',scores:{planner:3}},
+      {text:'先搜一下别人怎么做的...然后收藏了就完了',scores:{procrastinator:2,phone:1}},
+      {text:'太难了，我先躺着想想...想了一天还没想',scores:{couch:3}},
+    ]
+  },
+  {
+    q: '你的理想周末是？',
+    opts: [
+      {text:'和朋友们出去玩，逛街吃饭聊天到深夜',scores:{social:3}},
+      {text:'在家关机断网，不被任何人打扰',scores:{introvert:3}},
+      {text:'泡杯咖啡，看一本收藏了很久的书',scores:{nerd:2,caffeine:1}},
+      {text:'睡到下午两点，起来点个外卖，继续躺着',scores:{sleep:2,couch:1}},
+    ]
+  },
+  {
+    q: '你和你家宠物的关系是？',
+    opts: [
+      {text:'我的手机相册5000张照片里4900张是它的',scores:{pet:3}},
+      {text:'我没养宠物，但我会给每只流浪猫取名字',scores:{pet:2,hero:1}},
+      {text:'宠物？不如养个电竞手柄，不吵不闹',scores:{creative:2,phone:1}},
+      {text:'我家猫/狗的伙食比我的好，而且我毫无怨言',scores:{snack:2,pet:1}},
+    ]
+  },
+  {
+    q: '做重大决定的时候，你通常是？',
+    opts: [
+      {text:'三秒内拍板，做了就做了，不后悔',scores:{hero:3}},
+      {text:'纠结三天，分析每个选项的利弊，然后还是选了第一个',scores:{detective:2,procrastinator:1}},
+      {text:'抛硬币，交给命运，反正怎么选都行',scores:{zen:3}},
+      {text:'发朋友圈让大家帮我选，评论区就是我的决策委员会',scores:{social:2,phone:1}},
+    ]
+  },
+  {
+    q: '看到朋友发的朋友圈，你通常会？',
+    opts: [
+      {text:'放大查看每张照片的背景细节，发现隐藏信息',scores:{detective:3}},
+      {text:'光速点赞然后划走，一秒都不浪费',scores:{phone:3}},
+      {text:'在评论区写一篇500字的深度分析',scores:{complain:2,nerd:1}},
+      {text:'看了一眼，然后在心里默默吐槽了三分钟',scores:{introvert:2,complain:1}},
+    ]
+  },
+  {
+    q: '你和朋友聊天最常用的方式是？',
+    opts: [
+      {text:'语音消息轰炸，每条60秒，连发十条',scores:{social:2,drama:1}},
+      {text:'纯表情包交流，一个字都不打',scores:{phone:3}},
+      {text:'认真打字，每个标点符号都反复斟酌',scores:{detective:2,introvert:1}},
+      {text:'吐槽为主，友情就是互相伤害',scores:{complain:3}},
+    ]
+  },
+  {
+    q: '在一场无聊的聚会上，你通常在？',
+    opts: [
+      {text:'主动找话题把气氛搞热，我是聚会的灵魂',scores:{social:3}},
+      {text:'找个角落坐着，假装在看手机实际上什么都没看',scores:{introvert:2,phone:2}},
+      {text:'在脑子里给每个人写人物小传，顺便分析他们的微表情',scores:{detective:3}},
+      {text:'已经偷偷离开了，聚会哪有家里舒服',scores:{couch:3}},
+    ]
+  },
+  {
+    q: '打开购物App，你的购物车里通常有？',
+    opts: [
+      {text:'50件以上的商品，全是"下次打折再买"的',scores:{delivery:3}},
+      {text:'什么都没买，只是来逛逛看看（然后不知不觉下了两单）',scores:{procrastinator:2,phone:1}},
+      {text:'精心挑选的3件商品，做了详细的对比表格',scores:{detective:2,planner:1}},
+      {text:'全是零食和奶茶优惠券，这才是生活的意义',scores:{snack:2,boba:1}},
+    ]
+  },
+  {
+    q: '你的工作/学习风格是？',
+    opts: [
+      {text:'行动派！先做了再说，边做边改',scores:{hero:3}},
+      {text:'先做一份完美的计划表，然后用三天来做计划',scores:{planner:3}},
+      {text:'想到什么做什么，完全没有固定流程',scores:{creative:3}},
+      {text:'能拖就拖，DDL才是我的超能力来源',scores:{procrastinator:3}},
+    ]
+  },
+  {
+    q: '你在团队里通常是哪种角色？',
+    opts: [
+      {text:'领导者，我来安排一切，大家听我的',scores:{hero:3}},
+      {text:'执行者，你说啥我干啥，不操心不累心',scores:{zen:2,couch:1}},
+      {text:'吐槽担当，这个方案有8个问题我来一一指出',scores:{complain:3}},
+      {text:'气氛担当，不说话我就浑身难受',scores:{drama:2,social:1}},
+    ]
+  },
+  {
+    q: '别人当面夸你，你会？',
+    opts: [
+      {text:'开心接受！我就是这么优秀，不用谦虚',scores:{drama:2,social:1}},
+      {text:'脸红否认"哪有哪有"，内心已经乐开了花',scores:{zen:2,introvert:1}},
+      {text:'分析对方夸的动机，是真心的还是客套',scores:{detective:3}},
+      {text:'立刻转移话题，被夸比被骂还让我难受',scores:{introvert:3}},
+    ]
+  },
+  {
+    q: '你对奶茶的态度是？',
+    opts: [
+      {text:'全糖去冰加珍珠加布丁加椰果，这是我的信仰',scores:{boba:3}},
+      {text:'我只喝美式，奶茶太甜了不配我',scores:{caffeine:3}},
+      {text:'偶尔喝一杯，无糖少冰比较健康',scores:{planner:2,zen:1}},
+      {text:'奶茶是什么？白开水才是人类最好的朋友',scores:{nerd:2,couch:1}},
+    ]
+  },
+  {
+    q: '你收到批评时最真实的内心活动是？',
+    opts: [
+      {text:'虚心接受，认真反思，立刻改进',scores:{nerd:2,planner:1}},
+      {text:'表面微笑点头，内心已经写了2000字反驳稿',scores:{zen:2,complain:2}},
+      {text:'无所谓，你说的对但我不改',scores:{couch:2,queen:1}},
+      {text:'赶紧截图发给朋友：你看这个人是不是有毛病',scores:{social:2,phone:1}},
+    ]
+  },
+  {
+    q: '你洗澡的时候通常在做什么？',
+    opts: [
+      {text:'开个人演唱会，浴室的回音效果一流',scores:{drama:3}},
+      {text:'思考人生的意义和宇宙的终极奥秘',scores:{nerd:2,creative:1}},
+      {text:'发呆放空，什么都不想，享受热水',scores:{couch:3}},
+      {text:'防水手机袋+短视频，洗澡也不浪费时间',scores:{phone:3}},
+    ]
+  },
+  {
+    q: '如果可以选一种超能力，你最想要？',
+    opts: [
+      {text:'时间暂停，这样我就能多睡一小时',scores:{sleep:3}},
+      {text:'瞬间移动，这样就不用挤地铁了',scores:{couch:2,delivery:1}},
+      {text:'读心术，终于能知道别人到底在想什么',scores:{detective:3}},
+      {text:'自动完成任务，从此告别DDL',scores:{queen:2,procrastinator:1}},
+    ]
+  },
+  {
+    q: '现在做完了所有题目，你最想做什么？',
+    opts: [
+      {text:'立刻看结果！我已经等不及了！',scores:{social:2,hero:1}},
+      {text:'点杯奶茶犒劳自己，测试很辛苦的',scores:{boba:2,snack:1}},
+      {text:'困了，测完就睡觉吧',scores:{sleep:2,couch:1}},
+      {text:'赶紧截图发朋友圈，让大家都来测',scores:{drama:2,phone:1}},
+    ]
+  },
+];
+
+// ===== COLOR CATEGORIES (MBTI-style 4 groups) =====
+const categories = {
+  blue: {name:'理性分析派',color:'#3B82F6',icon:'&#128218;',desc:'冷静、理性、注重逻辑与秩序'},
+  green: {name:'社交能量派',color:'#10B981',icon:'&#128588;',desc:'热情、外向、善于沟通与创造'},
+  amber: {name:'自由享乐派',color:'#F59E0B',icon:'&#127849;',desc:'乐观、随性、追求快乐与舒适'},
+  purple: {name:'内敛独处派',color:'#8B5CF6',icon:'&#127769;',desc:'安静、独立、享受独处与自由'},
+  red: {name:'隐藏人格',color:'#FF1744',icon:'&#128373;',desc:'只有极少数人才能解锁的神秘人格'},
+};
+const personalityCategory = {
+  // Blue - 理性分析派
+  nerd:'blue',detective:'blue',planner:'blue',complain:'blue',zen:'blue',
+  // Green - 社交能量派
+  social:'green',drama:'green',hero:'green',boba:'green',creative:'green',
+  // Amber - 自由享乐派
+  caffeine:'amber',snack:'amber',chef:'amber',delivery:'amber',pet:'amber',phone:'amber',
+  // Purple - 内敛独处派
+  introvert:'purple',sleep:'purple',procrastinator:'purple',queen:'purple',couch:'purple',
+  // Special - 隐藏人格
+  samepicker:'red',
+};
+
+// ===== IMAGE MAP: MBTI-style flat illustrations =====
+const personalityImages = {
+  nerd:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-51-40.png',
+  detective:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-51-25.png',
+  planner:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-51-30.png',
+  complain:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-51-35.png',
+  zen:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-52-17.png',
+  social:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-52-18.png',
+  drama:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-52-20.png',
+  hero:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-52-22.png',
+  boba:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-53-02.png',
+  creative:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-53-11.png',
+  caffeine:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-53-06.png',
+  chef:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-53-54.png',
+  introvert:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-54-44.png',
+  couch:'assets/images/Minimalist_flat_vector_illustr_2026-04-30T05-55-27.png',
+};
+// CSS fallback art for personalities without generated images
+const personalityFallback = {
+  snack:{emoji:'&#127846;',bg:'linear-gradient(135deg,#F59E0B,#D97706)'},
+  delivery:{emoji:'&#128230;',bg:'linear-gradient(135deg,#F97316,#EA580C)'},
+  pet:{emoji:'&#128049;',bg:'linear-gradient(135deg,#FBBF24,#D97706)'},
+  phone:{emoji:'&#128241;',bg:'linear-gradient(135deg,#FCD34D,#F59E0B)'},
+  sleep:{emoji:'&#127769;',bg:'linear-gradient(135deg,#8B5CF6,#7C3AED)'},
+  procrastinator:{emoji:'&#9200;',bg:'linear-gradient(135deg,#A78BFA,#8B5CF6)'},
+  queen:{emoji:'&#128081;',bg:'linear-gradient(135deg,#C4B5FD,#A78BFA)'},
+  samepicker:{emoji:'&#129318;',bg:'linear-gradient(135deg,#FF1744,#FF5252)'},
+};
+
+// ===== APP STATE =====
+let currentQ = 0;
+let scores = {};
+let choiceHistory = []; // track which option (0-3) was picked each question
+
+// ===== FUNCTIONS =====
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function startQuiz() {
+  currentQ = 0;
+  scores = {};
+  choiceHistory = [];
+  showPage('quizPage');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const total = questions.length;
+  document.getElementById('progressNum').textContent = `${currentQ + 1}/${total}`;
+  document.getElementById('progressFill').style.width = `${((currentQ + 1) / total) * 100}%`;
+  document.getElementById('quizCounter').textContent = `还剩 ${total - currentQ - 1} 道灵魂拷问`;
+  document.getElementById('questionText').textContent = `${currentQ + 1}. ${q.q}`;
+  
+  const wrap = document.getElementById('optionsWrap');
+  wrap.innerHTML = '';
+  const keys = ['A','B','C','D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="option-key">${keys[i]}</span><span>${opt.text}</span>`;
+    btn.onclick = () => selectOption(opt.scores, i);
+    wrap.appendChild(btn);
+  });
+
+  // Animate card
+  const card = document.getElementById('questionCard');
+  card.style.animation = 'none';
+  card.offsetHeight; // trigger reflow
+  card.style.animation = 'fadeSlideIn .5s ease';
+}
+
+function selectOption(optScores, optIndex) {
+  for (const [id, val] of Object.entries(optScores)) {
+    if (!scores[id]) scores[id] = 0;
+    scores[id] += val;
+  }
+  choiceHistory.push(optIndex);
+  currentQ++;
+  if (currentQ < questions.length) {
+    renderQuestion();
+  } else {
+    showAnalyzing();
+  }
+}
+
+function showAnalyzing() {
+  showPage('analyzingPage');
+  const faces = ['&#129300;','&#128526;','&#128564;','&#129323;','&#128520;','&#129313;'];
+  const texts = [
+    '正在解析你的灵魂碎片...',
+    '对照22种人格数据库...',
+    '量子纠缠分析中...',
+    '计算你的人格曲率...',
+    '灵魂拼图中...',
+    '最终鉴定中...'
+  ];
+  let step = 0;
+  const faceEl = document.getElementById('analyzeFace');
+  const textEl = document.getElementById('analyzeText');
+  const subEl = document.getElementById('analyzeSub');
+  
+  const subs = [
+    '请勿关闭页面',
+    '你的灵魂正在排队',
+    '已排到第3位',
+    '马上就好...',
+    '最后一步了！',
+    '鉴定结果即将揭晓！'
+  ];
+  
+  const timer = setInterval(() => {
+    step++;
+    if (step < faces.length) {
+      faceEl.innerHTML = faces[step];
+      textEl.textContent = texts[step];
+      subEl.textContent = subs[step];
+    }
+    if (step >= faces.length + 1) {
+      clearInterval(timer);
+      showResult();
+    }
+  }, 600);
+}
+
+function getResult() {
+  // Check if user picked the same option for ALL questions
+  if (choiceHistory.length === questions.length) {
+    const firstChoice = choiceHistory[0];
+    const allSame = choiceHistory.every(c => c === firstChoice);
+    if (allSame) {
+      return personalities.find(p => p.id === 'samepicker');
+    }
+  }
+
+  let maxScore = -Infinity;
+  let result = personalities[0];
+  for (const p of personalities) {
+    const s = scores[p.id] || 0;
+    if (s > maxScore) {
+      maxScore = s;
+      result = p;
+    }
+  }
+  return result;
+}
+
+function showResult() {
+  const result = getResult();
+  const card = document.getElementById('resultCard');
+  const catKey = personalityCategory[result.id];
+  const cat = categories[catKey];
+  const catColor = cat.color;
+  const imgSrc = personalityImages[result.id];
+  const fallback = personalityFallback[result.id];
+  const hasImage = !!imgSrc;
+  
+  // Build image section
+  let imageHTML;
+  if (hasImage) {
+    imageHTML = `<div class="result-image-wrap"><img src="${imgSrc}" alt="${result.name}"></div>`;
+  } else {
+    const fb = fallback || {emoji:'&#10024;',bg:`linear-gradient(135deg,${catColor},${catColor}88)`};
+    imageHTML = `<div class="result-image-wrap"><div class="placeholder-art" style="background:${fb.bg};display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;"><span style="font-size:100px;line-height:1;">${fb.emoji}</span></div></div>`;
+  }
+  
+  card.innerHTML = `
+    ${imageHTML}
+    <div class="result-body">
+      <div class="result-cat-badge" style="background:${catColor}20;color:${catColor};border:1px solid ${catColor}40;">${cat.icon} ${cat.name}</div>
+      <h2 class="result-title" style="color:${catColor};">${result.name}</h2>
+      <p class="result-subtitle" style="color:${catColor}99;">${result.subtitle}</p>
+      <p class="result-desc">${result.description}</p>
+      
+      <div class="result-tags">
+        ${result.tags.map(t => `<span class="result-tag" style="border-color:${catColor}20;color:${catColor}cc;">${t}</span>`).join('')}
+      </div>
+      
+      <div class="result-stats">
+        <div class="stat-item">
+          <div class="stat-value" style="color:${catColor};">${result.stats.energy}%</div>
+          <div class="stat-label">能量值</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" style="color:${catColor};">${result.stats.social}%</div>
+          <div class="stat-label">社交力</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" style="color:${catColor};">${result.stats.chaos}%</div>
+          <div class="stat-label">混乱度</div>
+        </div>
+      </div>
+      
+      <div class="result-compat">
+        <h4 style="color:${catColor};">最佳拍档匹配度</h4>
+        <div class="result-compat-list">
+          ${result.compat.map((name, i) => {
+            const score = result.compatScores[i];
+            const color = score > 80 ? '#10B981' : score > 60 ? '#F59E0B' : '#EF4444';
+            return `<div class="compat-item">
+              <span>${name}</span>
+              <div class="compat-bar"><div class="compat-fill" style="width:${score}%;background:${color};" data-width="${score}"></div></div>
+              <span class="compat-pct" style="color:${color}">${score}%</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      
+      <div class="result-advice" style="background:${catColor}08;border:1px solid ${catColor}20;">
+        <h4 style="color:${catColor};">灵魂导师的建议</h4>
+        <p>${result.advice}</p>
+      </div>
+      
+      <button class="btn-share" style="background:${catColor};" onclick="shareResult()">分享我的灵魂鉴定结果</button>
+      <button class="btn-retry" onclick="retryQuiz()">重新鉴定灵魂</button>
+    </div>
+  `;
+  
+  showPage('resultPage');
+  
+  // Animate compat bars
+  setTimeout(() => {
+    document.querySelectorAll('.compat-fill').forEach(bar => {
+      const w = bar.dataset.width;
+      bar.style.width = '0%';
+      setTimeout(() => { bar.style.width = w + '%'; }, 100);
+    });
+  }, 300);
+
+  // Show sponsor popup after results
+  showSponsor();
+}
+
+// ===== SPONSOR MODAL =====
+function showSponsor() {
+  if (localStorage.getItem('sponsor_never_show') === 'true') return;
+  // Delay 2s after result shown for better UX
+  setTimeout(() => {
+    const modal = document.getElementById('sponsorModal');
+    if (modal) modal.classList.remove('hidden');
+  }, 2000);
+}
+
+function closeSponsor() {
+  const modal = document.getElementById('sponsorModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function neverShowSponsor() {
+  localStorage.setItem('sponsor_never_show', 'true');
+  closeSponsor();
+}
+
+// ===== SHARE =====
+function shareResult() {
+  const result = getResult();
+  const text = `我在【灵魂鉴定局】测出了自己的人格类型：${result.name}！${result.subtitle}\n\n快来测测你的灵魂属于哪一种奇葩人格吧！`;
+  if (navigator.share) {
+    navigator.share({title:'灵魂鉴定局',text}).catch(()=>{});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.btn-share');
+      btn.textContent = '已复制到剪贴板！';
+      setTimeout(() => { btn.textContent = '分享我的灵魂鉴定结果'; }, 2000);
+    });
+  }
+}
+
+function retryQuiz() {
+  showPage('startPage');
+}
+
+// ===== KEYBOARD SHORTCUTS =====
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('quizPage').classList.contains('active')) return;
+  const keyMap = {a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3};
+  const idx = keyMap[e.key.toLowerCase()];
+  if (idx !== undefined) {
+    const opts = document.querySelectorAll('.option');
+    if (opts[idx]) opts[idx].click();
+  }
+});
+
+// ===== INIT =====
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loadingScreen').classList.add('hidden');
+  }, 1500);
+});
+</script>
+</body>
+</html>
